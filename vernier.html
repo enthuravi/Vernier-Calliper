@@ -1,0 +1,101 @@
+<!doctype html>
+<html>
+<head>
+<title>Vernier caliper</title>
+<style>
+p{color:lime; background-color:rgb(0,0,7);
+       width:20vw; text-align:center; margin:auto;
+       font-size:32px; font-family:calibri;}
+input{width:70vw; margin:0 14vw;}
+@media (min-width:800px){
+div{display:none;}}
+@media (max-width:1024px){
+.flex{display:flex;}
+.flex>div{width:45vw; font-size:20vw; margin:4vw; color:white; font-weight:bold;
+       padding:5vw 15vw; background-color:rgb(100,100,100); display:inline-block;
+       touch-action:manipulation;}}
+</style>
+</head>
+<body>
+<canvas width="800" height="400"></canvas>
+<canvas width="200" height="400" style="display:none;"></canvas>
+<p>0 mm</p>
+<input type="range" max="700" value="0" min="0" onchange="myf()">
+<div class="flex">
+<div><</div><div>></div>
+</div>
+<script>
+var canvas=document.querySelectorAll("canvas")[0];
+var canvas2=document.querySelectorAll("canvas")[1];
+var vernier=canvas2.getContext("2d");
+var ctx=canvas.getContext("2d");
+vernier.fillStyle="rgb(200,200,200)";
+
+var rep=0;
+var myfunction=function(rep){
+ctx.clearRect(0,0,800,400);
+ctx.beginPath();
+ctx.moveTo(5,15);
+ctx.lineTo(795,15);
+ctx.lineTo(795,255);
+ctx.lineTo(25,255);
+ctx.lineTo(25,395);
+ctx.quadraticCurveTo(0,325,5,255);
+ctx.closePath();
+ctx.fillStyle="rgb(200,200,200)";
+ctx.fill();
+ctx.stroke();
+
+for(let i=0; i<71; i++){
+ctx.beginPath();
+ctx.moveTo(50+i*10,255);
+if(i%5==0){ctx.lineTo(50+i*10,175);}
+else{ctx.lineTo(50+i*10,215);}
+ctx.stroke();}
+
+ctx.font="20px arial";
+ctx.fillStyle="black"
+ctx.textAlign='center';
+for(let i=0; i<8; i++){
+ctx.fillText(i,50+i*100,168);}
+
+ctx.save();
+ctx.translate(rep,0);
+
+vernier.beginPath();
+vernier.moveTo(25,10);
+vernier.lineTo(165,10);
+vernier.lineTo(165,260);
+vernier.lineTo(45,260);
+vernier.quadraticCurveTo(40,330,25,395);
+vernier.closePath();
+vernier.fill();
+vernier.stroke();
+
+for(let i=0; i<11; i++){
+vernier.beginPath();
+vernier.moveTo(50+i*9,255);
+vernier.lineTo(50+i*9,240);
+vernier.stroke();}
+
+vernier.beginPath();
+vernier.roundRect(40,150,110,90,5);
+vernier.closePath();
+vernier.stroke();
+vernier.globalCompositeOperation="destination-atop";
+vernier.clip();
+
+ctx.drawImage(canvas2,0,0);
+ctx.restore();}
+myfunction(0);
+function myf(){
+rep=document.querySelector('input').value;
+document.querySelector('p').innerHTML=rep/10 + " mm";
+myfunction(rep)}
+
+var divs=document.querySelectorAll('div');
+divs[1].addEventListener('click',function(){document.querySelector('input').value -= 1; myf();})
+divs[2].addEventListener('click',function(){document.querySelector('input').value -=1 - 2 ; myf();})
+</script>
+</body>
+</html>
